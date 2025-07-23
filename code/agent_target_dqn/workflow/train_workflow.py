@@ -42,7 +42,7 @@ def workflow(envs, agents, logger=None, monitor=None):
             # Save model file
             # 保存model文件
             now = time.time()
-            if now - last_save_model_time >= 1800:
+            if now - last_save_model_time >= 18:#调试
                 agent.save_model()
                 last_save_model_time = now
 
@@ -118,12 +118,16 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                         _extra_info.result_message is {_extra_info['result_message']}"
                     )
                     break
-
+                end_pos = (_extra_info["game_info"]["end_pos"]["x"], _extra_info["game_info"]["end_pos"]["z"])
+                # logger.info(
+                #     f"game_info_endpos:{end_pos} "
+                # )
+                
                 step += 1
 
                 # Feature processing
                 # 特征处理
-                agent.terminate_update(terminated)
+                agent.terminate_update([terminated,end_pos])
                 _obs_data, rewards = agent.observation_process(_obs, _extra_info)
                 reward = rewards[0]
                 # reward = sum(reward_list)

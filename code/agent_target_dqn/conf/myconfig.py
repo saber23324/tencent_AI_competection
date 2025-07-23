@@ -26,7 +26,7 @@ Args = {
         [0, 0, 0, 0, 0],
     ], np.float32),
     "treasure_miss_reset_episode": 100,
-    "dist_reward_coef" : 10.0,
+    "dist_reward_coef" : 3.0,
     "rate_of_projection" : 15.0,
     "treasure_punish_coef" : 10,
 

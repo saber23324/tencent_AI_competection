@@ -45,6 +45,7 @@ class Preprocessor:
         self.miss_treasure = 0.0
         self.last_dist_end = 0.0
         self.dist_end = 0
+
     def _get_pos_feature(self, found, cur_pos, target_pos):
         relative_pos = tuple(y - x for x, y in zip(cur_pos, target_pos))
         dist = np.linalg.norm(relative_pos)
@@ -62,7 +63,7 @@ class Preprocessor:
         return feature
 
     def pb2struct(self, frame_state, last_action):
-        obs, ex_obs = frame_state
+        obs, ex_obs = frame_state[0],frame_state[1]
         self.step_no = obs["frame_state"]["step_no"]
 
         hero = obs["frame_state"]["heroes"][0]
@@ -79,11 +80,11 @@ class Preprocessor:
         self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  +=  1
         # 终点位置与距离
         self.last_dist_end = self.dist_end
-        self.end_pos_obs = (ex_obs["game_info"]["end_pos"]["x"], ex_obs["game_info"]["end_pos"]["z"])
+        # self.end_pos_obs = (ex_obs["game_info"]["end_pos"]["x"], ex_obs["game_info"]["end_pos"]["z"])#传进来不能直接用？？
         relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos_obs))
         self.dist_end = np.linalg.norm(relative_pos)
         # 宝箱奖励
-        self.treasure_score = ex_obs["game_info"]["treasure_score"]
+        # self.treasure_score = ex_obs["game_info"]["treasure_score"]
 
         # 物体位置与距离
         for organ in obs["frame_state"]["organs"]:
@@ -93,7 +94,7 @@ class Preprocessor:
             relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
             self.organ_dist[config_id] = np.linalg.norm(relative_pos)
 
-        self.miss_treasure = ex_obs["game_info"]["treasure_count"] - ex_obs["game_info"]["treasure_collected_count"]
+        # self.miss_treasure = ex_obs["game_info"]["treasure_count"] - ex_obs["game_info"]["treasure_collected_count"]
         '''
          # End position
         # 终点位置
@@ -123,7 +124,8 @@ class Preprocessor:
         self.move_usable = True
         self.last_action = last_action
     def update_terminated(self,terminated):
-        self.terminated_flag = terminated
+        self.terminated_flag = terminated[0]
+        self.end_pos_obs = terminated[1]
     def reward_pross(self):
         # REWARD
         # 1. punish repeated step around
@@ -170,7 +172,7 @@ class Preprocessor:
 
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
         reward = ( dist_reward + hitwall_reward + final_reward )/Args['rate_of_projection']
-        return [reward,around_reward ,dist_reward , hitwall_reward , self.dist_end ,self.map_walk[center_x][center_z]]
+        return [reward,around_reward ,dist_reward , hitwall_reward , final_reward ,self.map_walk[center_x][center_z]]
         
         
     def process(self, frame_state, last_action):
