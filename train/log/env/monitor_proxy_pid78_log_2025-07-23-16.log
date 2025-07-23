@@ -1,0 +1,2 @@
+{"time": "2025-07-23 16:35:45.804134", "level": "INFO", "message": "env monitor_proxy process start success at pid is 78", "file": "monitor_proxy_process.py", "line": "84", "module": "env", "process": "monitor_proxy_process", "function": "before_run", "stack": "", "pid": 78}
+{"time": "2025-07-23 16:39:22.122920", "level": "INFO", "message": "env monitor_proxy process start success at pid is 78", "file": "monitor_proxy_process.py", "line": "84", "module": "env", "process": "monitor_proxy_process", "function": "before_run", "stack": "", "pid": 78}

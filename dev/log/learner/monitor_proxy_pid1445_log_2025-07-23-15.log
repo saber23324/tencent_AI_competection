@@ -1,0 +1,1 @@
+{"time": "2025-07-23 15:10:54.092583", "level": "INFO", "message": "learner monitor_proxy process start success at pid is 1445", "file": "monitor_proxy_process.py", "line": "73", "module": "learner", "process": "monitor_proxy_process", "function": "before_run", "stack": "", "pid": 1445}
