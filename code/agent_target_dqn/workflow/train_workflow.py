@@ -42,7 +42,7 @@ def workflow(envs, agents, logger=None, monitor=None):
             # Save model file
             # 保存model文件
             now = time.time()
-            if now - last_save_model_time >= 18:#调试
+            if now - last_save_model_time >= 1800:#调试
                 agent.save_model()
                 last_save_model_time = now
 
