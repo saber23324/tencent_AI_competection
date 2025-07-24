@@ -1,21 +1,21 @@
-2025-07-24 02:47:15.702 | INFO | PID:255 | model_file_sync.before_run:189 - aisrv model_file_sync, use modelpool, use_which_deep_learning_framework is pytorch
-2025-07-24 02:47:15.703 | INFO | PID:255 | model_file_sync.before_run:195 - model_file_sync process pid is 255
-2025-07-24 02:47:15.713 | INFO | PID:255 | model_file_sync.make_model_dirs:138 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/plugins success
-2025-07-24 02:47:15.714 | INFO | PID:255 | model_file_sync.make_model_dirs:144 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/models /data/ckpt/back_to_the_realm_v2_target_dqn/plugins success
-2025-07-24 02:47:15.714 | INFO | PID:255 | model_file_sync.make_model_dirs:153 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/convert_models_aisrv success
-2025-07-24 02:47:15.715 | INFO | PID:255 | monitor_proxy.__init__:36 - aisrv ppid is 140525029328704
-2025-07-24 02:47:15.718 | INFO | PID:237 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.15:5566 start
-2025-07-24 02:47:15.722 | INFO | PID:258 | monitor_proxy_process.before_run:73 - aisrv monitor_proxy process start success at pid is 258
-2025-07-24 02:47:15.724 | INFO | PID:237 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.13:5566 start
-2025-07-24 02:47:15.730 | INFO | PID:261 | monitor_proxy_process.before_run:73 - aisrv monitor_proxy process start success at pid is 261
-2025-07-24 02:47:15.729 | INFO | PID:237 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.12:5566 start
-2025-07-24 02:47:15.735 | INFO | PID:237 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.14:5566 start
-2025-07-24 02:47:15.737 | INFO | PID:237 | aisrv_server_standard.before_run:604 - aisrv AiServer is start success at 0.0.0.0:8000, pid is 237, run_mode is train, self_play is False
-2025-07-24 02:47:15.737 | INFO | PID:260 | kaiwu_rl_helper_standard.__init__:134 - aisrv kaiwu_rl_helper start at pid 260, ppid is 140525029328704, thread id is -1
-2025-07-24 02:47:15.739 | INFO | PID:260 | aisrv_server_standard.before_run:794 - aisrv aisrvhandle use kaiwu_rl_helper: <KaiWuRLStandardHelper(kaiwu_rl_helper_0, initial daemon)>
-2025-07-24 02:47:15.740 | INFO | PID:260 | aisrv_server_standard.before_run:797 - aisrv aisrvhandle established connect to 172.20.0.15:5566, slot id is 0, min_slot_id is 0
-2025-07-24 02:47:15.741 | INFO | PID:260 | aisrv_server_standard.before_run:806 - aisrv aisrvhandle current_actor_addrs is ['127.0.0.1:8888'], current_learner_addrs is ['172.20.0.8:9999']
-2025-07-24 02:47:15.741 | INFO | PID:260 | aisrv_server_standard.before_run:837 - aisrv aisrvhandle start success at pid 260
+2025-07-24 17:24:07.475 | INFO | PID:259 | model_file_sync.before_run:189 - aisrv model_file_sync, use modelpool, use_which_deep_learning_framework is pytorch
+2025-07-24 17:24:07.476 | INFO | PID:259 | model_file_sync.before_run:195 - model_file_sync process pid is 259
+2025-07-24 17:24:07.478 | INFO | PID:259 | model_file_sync.make_model_dirs:138 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/plugins success
+2025-07-24 17:24:07.478 | INFO | PID:259 | model_file_sync.make_model_dirs:144 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/models /data/ckpt/back_to_the_realm_v2_target_dqn/plugins success
+2025-07-24 17:24:07.479 | INFO | PID:259 | model_file_sync.make_model_dirs:153 - model_file_sync mkdir /data/ckpt/back_to_the_realm_v2_target_dqn/convert_models_aisrv success
+2025-07-24 17:24:07.481 | INFO | PID:259 | monitor_proxy.__init__:36 - aisrv ppid is 140205154903872
+2025-07-24 17:24:07.494 | INFO | PID:235 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.22:5566 start
+2025-07-24 17:24:07.499 | INFO | PID:263 | monitor_proxy_process.before_run:73 - aisrv monitor_proxy process start success at pid is 263
+2025-07-24 17:24:07.500 | INFO | PID:235 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.18:5566 start
+2025-07-24 17:24:07.504 | INFO | PID:264 | monitor_proxy_process.before_run:73 - aisrv monitor_proxy process start success at pid is 264
+2025-07-24 17:24:07.507 | INFO | PID:235 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.21:5566 start
+2025-07-24 17:24:07.515 | INFO | PID:235 | aisrv_server_standard.start_aisrv_handler:484 - aisrv AiServer AiSrvHandle with address: 172.20.0.23:5566 start
+2025-07-24 17:24:07.517 | INFO | PID:265 | kaiwu_rl_helper_standard.__init__:134 - aisrv kaiwu_rl_helper start at pid 265, ppid is 140205154903872, thread id is -1
+2025-07-24 17:24:07.520 | INFO | PID:265 | aisrv_server_standard.before_run:794 - aisrv aisrvhandle use kaiwu_rl_helper: <KaiWuRLStandardHelper(kaiwu_rl_helper_0, initial daemon)>
+2025-07-24 17:24:07.521 | INFO | PID:265 | aisrv_server_standard.before_run:797 - aisrv aisrvhandle established connect to 172.20.0.22:5566, slot id is 0, min_slot_id is 0
+2025-07-24 17:24:07.522 | INFO | PID:265 | aisrv_server_standard.before_run:806 - aisrv aisrvhandle current_actor_addrs is ['127.0.0.1:8888'], current_learner_addrs is ['172.20.0.8:9999']
+2025-07-24 17:24:07.523 | INFO | PID:265 | aisrv_server_standard.before_run:837 - aisrv aisrvhandle start success at pid 265
+2025-07-24 17:24:07.527 | INFO | PID:235 | aisrv_server_standard.before_run:604 - aisrv AiServer is start success at 0.0.0.0:8000, pid is 235, run_mode is train, self_play is False
 /data/projects/back_to_the_realm_v2/agent_target_dqn/model/model.py:59: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
   nn.init.orthogonal(fc_layer.weight)
 /data/projects/back_to_the_realm_v2/agent_target_dqn/model/model.py:59: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
@@ -24,20 +24,20 @@
   nn.init.orthogonal(fc_layer.weight)
 /data/projects/back_to_the_realm_v2/agent_target_dqn/model/model.py:59: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
   nn.init.orthogonal(fc_layer.weight)
-2025-07-24 02:47:15.830 | INFO | PID:256 | model_wrapper_common.create_standard_model_wrapper:99 - aisrv policy_name train_one, algo target_dqn, model_wrapper is StandardModelWrapperPytorch
-2025-07-24 02:47:15.835 | INFO | PID:256 | multi_model_common.init_load_models:240 - aisrv predict just no model_pool files or copy_model_files failed, please check
-2025-07-24 02:47:15.836 | INFO | PID:256 | actor_proxy_local.before_run:663 - predict policy_name: train_one, start success at pid 256, on-policy/off-policy is off-policy, actor_receive_cost_time_ms: 1, predict_batch_size: 1
-2025-07-24 02:47:15.837 | INFO | PID:256 | actor_proxy_local.predict_stat:482 - aisrv predict now predict count is 0
 /data/projects/back_to_the_realm_v2/agent_target_dqn/model/model.py:59: UserWarning: nn.init.orthogonal is now deprecated in favor of nn.init.orthogonal_.
   nn.init.orthogonal(fc_layer.weight)
-2025-07-24 02:47:15.858 | INFO | PID:260 | env_proxy_lazy.__init__:53 - aisrv env proxy, zmq_client connect to 172.20.0.15:5566 success, client_id 43270721
-2025-07-24 02:47:15.859 | INFO | PID:260 | kaiwu_rl_helper_standard.start_agent:1018 - aisrv kaiwu_rl_helper start agent 0 with train_one
-2025-07-24 02:47:15.865 | INFO | PID:260 | train_workflow.run_episodes:69 - aisrv training_metrics is {'basic': {'train_global_step': 0, 'sample_production_and_consumption_ratio': 0, 'episode_cnt': 0, 'sample_receive_cnt': 0, 'predict_succ_cnt': 0, 'load_model_succ_cnt': 0}, 'algorithm': {'reward': 0, 'q_value': 0, 'value_loss': 0, 'policy_loss': 0, 'entropy_loss': 0}, 'env': {'total_score': 0, 'treasure_score': 0, 'max_steps': 0, 'finished_steps': 0, 'treasure_random': 0, 'total_treasures': 0, 'collected_treasures': 0, 'buff_cnt': 0, 'buff_cooldown': 0, 'talent_cooldown': 0, 'talent_cnt': 0, 'buff_random': 0, 'obstacle_count': 0, 'obstacle_random': 0}, 'diy': {'diy_1': 0, 'diy_2': 0, 'diy_3': 0, 'diy_4': 0, 'diy_5': 0}}
-2025-07-24 02:47:15.890056: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
-2025-07-24 02:47:15.929878: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+2025-07-24 17:24:07.665627: I tensorflow/core/util/port.cc:110] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2025-07-24 17:24:07.715 | INFO | PID:260 | model_wrapper_common.create_standard_model_wrapper:99 - aisrv policy_name train_one, algo target_dqn, model_wrapper is StandardModelWrapperPytorch
+2025-07-24 17:24:07.721 | INFO | PID:260 | multi_model_common.init_load_models:240 - aisrv predict just no model_pool files or copy_model_files failed, please check
+2025-07-24 17:24:07.722 | INFO | PID:260 | actor_proxy_local.before_run:663 - predict policy_name: train_one, start success at pid 260, on-policy/off-policy is off-policy, actor_receive_cost_time_ms: 1, predict_batch_size: 1
+2025-07-24 17:24:07.723 | INFO | PID:260 | actor_proxy_local.predict_stat:482 - aisrv predict now predict count is 0
+2025-07-24 17:24:07.727451: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
 To enable the following instructions: AVX2 AVX512F AVX512_VNNI AVX512_BF16 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2025-07-24 02:47:15.993 | INFO | PID:256 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
-2025-07-24 02:47:15.997 | INFO | PID:256 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
-2025-07-24 02:47:16.001 | INFO | PID:260 | env_proxy_lazy.reset:100 - aisrv EnvProxy reset one game success
-2025-07-24 02:47:16.002 | INFO | PID:256 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
-2025-07-24 02:47:16.006 | INFO | PID:256 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
+2025-07-24 17:24:07.746 | INFO | PID:265 | env_proxy_lazy.__init__:53 - aisrv env proxy, zmq_client connect to 172.20.0.22:5566 success, client_id 21982347
+2025-07-24 17:24:07.746 | INFO | PID:265 | kaiwu_rl_helper_standard.start_agent:1018 - aisrv kaiwu_rl_helper start agent 0 with train_one
+2025-07-24 17:24:07.754 | INFO | PID:265 | train_workflow.run_episodes:69 - aisrv training_metrics is {'basic': {'train_global_step': 0, 'sample_production_and_consumption_ratio': 0, 'episode_cnt': 0, 'sample_receive_cnt': 0, 'predict_succ_cnt': 0, 'load_model_succ_cnt': 0}, 'algorithm': {'reward': 0, 'q_value': 0, 'value_loss': 0, 'policy_loss': 0, 'entropy_loss': 0}, 'env': {'total_score': 0, 'treasure_score': 0, 'max_steps': 0, 'finished_steps': 0, 'treasure_random': 0, 'total_treasures': 0, 'collected_treasures': 0, 'buff_cnt': 0, 'buff_cooldown': 0, 'talent_cooldown': 0, 'talent_cnt': 0, 'buff_random': 0, 'obstacle_count': 0, 'obstacle_random': 0}, 'diy': {'diy_1': 0, 'diy_2': 0, 'diy_3': 0, 'diy_4': 0, 'diy_5': 0}}
+2025-07-24 17:24:07.864 | INFO | PID:260 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
+2025-07-24 17:24:07.865 | INFO | PID:260 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
+2025-07-24 17:24:07.909 | INFO | PID:260 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return
+2025-07-24 17:24:07.911 | INFO | PID:265 | env_proxy_lazy.reset:100 - aisrv EnvProxy reset one game success
+2025-07-24 17:24:07.914 | INFO | PID:260 | predict_common.standard_load_model_detail:319 - aisrv predict had not get pull model file, so return2

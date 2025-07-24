@@ -132,7 +132,7 @@ class Preprocessor:
         ratio =self.step_no/Args['max_env_step'] # 计算步数占总步数的比例
         # 提取中间5x5的矩阵
         center_x, center_z = self.cur_pos[0],self.cur_pos[1]  # 当前点坐标
-        sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]
+        sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]/Args["around_punish"]
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
         if ratio<0.5:
@@ -161,7 +161,7 @@ class Preprocessor:
         
         # 3.hit wall
         if self.hitwall_flag >= 3:
-            hitwall_reward = -2
+            hitwall_reward = -5
         else:
             hitwall_reward = 0
         # 4. treasure
@@ -171,7 +171,7 @@ class Preprocessor:
         ter_reward = ant_dist_treasure*Args['dist_reward_coef']
 
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward )/Args['rate_of_projection']
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward )/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , hitwall_reward , final_reward ,self.map_walk[center_x][center_z]]
         
         
