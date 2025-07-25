@@ -77,12 +77,17 @@ class Preprocessor:
         if len(self.history_pos) > 10:
             self.history_pos.pop(0)
         # 更新地图：
-        self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  +=  1
-        # 终点位置与距离
+        if self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]] < 1.0:
+            self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  +=  0.1
+        else:
+            self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  =  1.0
+        
+        """# 终点位置与距离
         self.last_dist_end = self.dist_end
         # self.end_pos_obs = (ex_obs["game_info"]["end_pos"]["x"], ex_obs["game_info"]["end_pos"]["z"])#传进来不能直接用？？
         relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos_obs))
-        self.dist_end = np.linalg.norm(relative_pos)
+        self.dist_end = np.linalg.norm(relative_pos)"""
+
         # 宝箱奖励
         # self.treasure_score = ex_obs["game_info"]["treasure_score"]
 
@@ -95,7 +100,7 @@ class Preprocessor:
             self.organ_dist[config_id] = np.linalg.norm(relative_pos)
 
         # self.miss_treasure = ex_obs["game_info"]["treasure_count"] - ex_obs["game_info"]["treasure_collected_count"]
-        '''
+        
          # End position
         # 终点位置
         for organ in obs["frame_state"]["organs"]:
@@ -110,7 +115,11 @@ class Preprocessor:
             target_dist = np.linalg.norm(target_relative_pos)
             if target_dist < 10 and len(self.target_pos_list) > 0:
                 self.end_pos = self.target_pos_list.pop(random.randrange(len(self.target_pos_list)))
-        '''
+
+        self.last_dist_end = self.dist_end
+        # # self.end_pos_obs = (ex_obs["game_info"]["end_pos"]["x"], ex_obs["game_info"]["end_pos"]["z"])#传进来不能直接用？？
+        # relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
+        self.dist_end = target_dist
        
 
         self.last_pos_norm = self.cur_pos_norm
@@ -132,14 +141,14 @@ class Preprocessor:
         ratio =self.step_no/Args['max_env_step'] # 计算步数占总步数的比例
         # 提取中间5x5的矩阵
         center_x, center_z = self.cur_pos[0],self.cur_pos[1]  # 当前点坐标
-        sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]/Args["around_punish"]
+        sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-0.1*Args['repeat_step_thre'], 0).reshape(5,5)).sum()
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
         #     around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
@@ -155,13 +164,13 @@ class Preprocessor:
         if self.terminated_flag:
             final_reward = 150
             # punish treasures haven't get
-            final_reward = final_reward - self.miss_treasure * Args['treasure_punish_coef']
+            # final_reward = final_reward - self.miss_treasure * Args['treasure_punish_coef']
         else :
             final_reward = 0
         
         # 3.hit wall
         if self.hitwall_flag >= 3:
-            hitwall_reward = -5
+            hitwall_reward = -3
         else:
             hitwall_reward = 0
         # 4. treasure
