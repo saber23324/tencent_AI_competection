@@ -107,12 +107,12 @@ class Preprocessor:
             if organ["sub_type"] == 4 and organ["status"] != -1:
                 self.end_pos = (organ["pos"]["x"], organ["pos"]["z"])
                 self.is_end_pos_found = True
+        target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
+        target_dist = np.linalg.norm(target_relative_pos)
 
         # if end_pos is not found, try to change to a new random target
         # 如果终点位置未找到，尝试更换随机的新目标
         if not self.is_end_pos_found:
-            target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
-            target_dist = np.linalg.norm(target_relative_pos)
             if target_dist < 10 and len(self.target_pos_list) > 0:
                 self.end_pos = self.target_pos_list.pop(random.randrange(len(self.target_pos_list)))
 
