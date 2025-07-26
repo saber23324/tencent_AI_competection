@@ -41,10 +41,12 @@ class Preprocessor:
         self.terminated_flag = False
         self.treasure_score = 0
         self.organ_pos = [(0, 0) for _ in range(23)] # 物件id 0代表buff，1~13代表宝箱 21代表起点, 22代表终点
-        self.organ_dist = [0 for _ in range(23)]
+        self.organ_dist = np.zeros(23, dtype=float)
+        self.organ_dist_last =np.zeros(23, dtype=float)
         self.miss_treasure = 0.0
         self.last_dist_end = 0.0
         self.dist_end = 0
+        self.is_treasure_found = np.zeros(23, dtype=bool)
 
     def _get_pos_feature(self, found, cur_pos, target_pos):
         relative_pos = tuple(y - x for x, y in zip(cur_pos, target_pos))
@@ -91,22 +93,28 @@ class Preprocessor:
         # 宝箱奖励
         # self.treasure_score = ex_obs["game_info"]["treasure_score"]
 
-        # 物体位置与距离
-        for organ in obs["frame_state"]["organs"]:
-            config_id = organ["config_id"]
-            self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
-            # 计算该物体与当前位置的距离
-            relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
-            self.organ_dist[config_id] = np.linalg.norm(relative_pos)
+
 
         # self.miss_treasure = ex_obs["game_info"]["treasure_count"] - ex_obs["game_info"]["treasure_collected_count"]
         
          # End position
         # 终点位置
+        self.organ_dist_last =np.copy(self.organ_dist)
         for organ in obs["frame_state"]["organs"]:
             if organ["sub_type"] == 4 and organ["status"] != -1:
                 self.end_pos = (organ["pos"]["x"], organ["pos"]["z"])
                 self.is_end_pos_found = True
+
+            if organ["sub_type"] == 1 and organ["status"] == 1:
+                config_id = organ["config_id"]
+                self.is_treasure_found[config_id] = True
+                self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
+                # 计算该物体与当前位置的距离
+                relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
+                self.organ_dist[config_id] = np.linalg.norm(relative_pos)
+            elif organ["sub_type"] == 1 and organ["status"] != 1:
+                self.is_treasure_found = False
+                self.organ_dist[config_id] = -1#NotFound
         target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
         target_dist = np.linalg.norm(target_relative_pos)
 
@@ -174,13 +182,22 @@ class Preprocessor:
         else:
             hitwall_reward = 0
         # 4. treasure
+
+        # 只考虑有效的宝箱ID范围(1-13)
+        valid_indices = slice(1, 14)
+        treasure_found_mask = self.is_treasure_found[valid_indices]
+        if np.any(treasure_found_mask):
+            dist_improvement = (self.organ_dist_last[valid_indices] - self.organ_dist[valid_indices]) * treasure_found_mask
+            treasure_reward = np.max(dist_improvement)*Args['dist_reward_coef']*1.2#额外增益
+        else:
+            treasure_reward = 0
         # if not self.terminated_flag and self.treasure_score == 100:
         #     r += 50 * (self.treasure_reward_coef * (self._last_treasure_flag - obs_data[239:249])).sum()
         ant_dist_treasure = np.max(self.organ_dist[1:14])
         ter_reward = ant_dist_treasure*Args['dist_reward_coef']
 
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward + around_reward )/Args['rate_of_projection']
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + treasure_reward)/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , hitwall_reward , final_reward ,self.map_walk[center_x][center_z]]
         
         
