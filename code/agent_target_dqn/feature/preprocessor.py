@@ -153,10 +153,10 @@ class Preprocessor:
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*0.5
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*0.5
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
         #     around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
@@ -197,8 +197,8 @@ class Preprocessor:
         ter_reward = ant_dist_treasure*Args['dist_reward_coef']
 
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + treasure_reward)/Args['rate_of_projection']
-        return [reward,around_reward ,dist_reward , hitwall_reward , final_reward ,self.map_walk[center_x][center_z]]
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward)/Args['rate_of_projection']
+        return [reward,around_reward ,dist_reward , treasure_reward , final_reward ,self.map_walk[center_x][center_z]]
         
         
     def process(self, frame_state, last_action):
