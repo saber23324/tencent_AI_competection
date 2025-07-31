@@ -113,7 +113,8 @@ class Preprocessor:
                 relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
                 self.organ_dist[config_id] = np.linalg.norm(relative_pos)
             elif organ["sub_type"] == 1 and organ["status"] != 1:
-                self.is_treasure_found = False
+                config_id = organ["config_id"]
+                self.is_treasure_found[config_id] = False
                 self.organ_dist[config_id] = -1#NotFound
         target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
         target_dist = np.linalg.norm(target_relative_pos)
@@ -153,10 +154,10 @@ class Preprocessor:
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*4
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*4
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
         #     around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
@@ -195,9 +196,11 @@ class Preprocessor:
         #     r += 50 * (self.treasure_reward_coef * (self._last_treasure_flag - obs_data[239:249])).sum()
         ant_dist_treasure = np.max(self.organ_dist[1:14])
         ter_reward = ant_dist_treasure*Args['dist_reward_coef']
-
+        # step reward
+        # 步数奖励
+        step_reward = -0.01
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward + around_reward)/Args['rate_of_projection']
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward)/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , treasure_reward , final_reward ,self.map_walk[center_x][center_z]]
         
         
