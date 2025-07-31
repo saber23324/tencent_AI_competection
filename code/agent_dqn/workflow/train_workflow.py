@@ -125,7 +125,9 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                 # 特征处理
                 _obs_data, reward_list = agent.observation_process(_obs, _extra_info)
                 reward = sum(reward_list)
-
+                logger.info(
+                    f"game_info_terminated:{truncated}{terminated} "
+                )
                 # Determine task over, and update the number of victories
                 # 判断任务结束, 并更新胜利次数
                 game_info = _extra_info["game_info"]
@@ -141,7 +143,7 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                     logger.info(
                         f"Game terminated! step_no:{step_no} score:{game_info['total_score']} win_rate:{win_rate}"
                     )
-                done = terminated or truncated or (max_step_no > 0 and step >= max_step_no)
+                done = terminated or truncated 
 
                 # Construct task frames to prepare for sample construction
                 # 构造任务帧，为构造样本做准备

@@ -153,10 +153,10 @@ class Preprocessor:
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*0.5
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*4
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*0.5
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*4
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
         #     around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
@@ -188,7 +188,7 @@ class Preprocessor:
         treasure_found_mask = self.is_treasure_found[valid_indices]
         if np.any(treasure_found_mask):
             dist_improvement = (self.organ_dist_last[valid_indices] - self.organ_dist[valid_indices]) * treasure_found_mask
-            treasure_reward = np.max(dist_improvement)*Args['dist_reward_coef']*1.2#额外增益
+            treasure_reward = np.max(dist_improvement)*Args['dist_reward_coef']*1.2 #额外增益
         else:
             treasure_reward = 0
         # if not self.terminated_flag and self.treasure_score == 100:
