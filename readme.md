@@ -4,6 +4,7 @@
 使用官方目的地进行测试
 效果优异，可以继续按该速录写  不用exobs
 虽然winrate提升不大 但泛化性有很大提升 2h位最少时间
+```python
     "repeat_punish5_5":np.array([
         [0.5, 0, 0, 0,0.5],
         [0, 0, 0.8, 0, 0],
@@ -19,3 +20,9 @@
         [0, 0.5, 0.8, 0.5, 0],
         [0, 0, 0, 0, 0],
     ],winrate 70% 但泛化性很差 
+```
+## 728
+"dist_reward_coef" : 1, - 3.5
+rate_of_projection  10  - 15
+
+log位置：aisrv_kaiwu_rl_helper_pid265_log_2025-07-28-15.log

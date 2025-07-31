@@ -127,27 +127,31 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
 
                 # Feature processing
                 # 特征处理
-                agent.terminate_update([terminated,end_pos])
+                terminated_info = [terminated,end_pos]
+                agent.terminate_update(terminated_info)
                 _obs_data, rewards = agent.observation_process(_obs, _extra_info)
                 reward = rewards[0]
                 # reward = sum(reward_list)
-
+                logger.info(
+                    f"game_info_terminated:{terminated_info[0]}{terminated_info[1]} "
+                )
                 # Determine task over, and update the number of victories
                 # 判断任务结束, 并更新胜利次数
                 game_info = _extra_info["game_info"]
                 if truncated:
                     win_rate = agent.update_win_rate(False)
-                    # reward = -3
+                    reward = -3
                     logger.info(
                         f"Game truncated! step_no:{step_no} score:{game_info['total_score']} win_rate:{win_rate}"
                     )
                 elif terminated:
                     win_rate = agent.update_win_rate(True)
-                    # reward = 10
+                    reward = 10
                     logger.info(
                         f"Game terminated! step_no:{step_no} score:{game_info['total_score']} win_rate:{win_rate}"
                     )
-                done = terminated or truncated or (max_step_no > 0 and step >= max_step_no)
+                # done = terminated or truncated or (max_step_no > 0 and step >= max_step_no)
+                done = terminated or truncated
 
                 # Construct task frames to prepare for sample construction
                 # 构造任务帧，为构造样本做准备
@@ -173,7 +177,7 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                             "diy_2": rewards[1],
                             "diy_3": rewards[2],
                             "diy_4": rewards[3],
-                            "diy_5": rewards[5],
+                            "diy_5": rewards[4],
                         }
 
                     if len(collector) > 0:
