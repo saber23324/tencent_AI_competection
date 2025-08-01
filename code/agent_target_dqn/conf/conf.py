@@ -7,7 +7,15 @@
 Author: Tencent AI Arena Authors
 """
 
+class Args:
+    dim_of_map_feature = 4*51*51
+    dim_of_treause = 23+23
+    DIM_OF_BACKBONE = 10450
+    ### Network ###
+    observation_img_shape = (4, 51, 51)
+    observation_vec_shape = dim_of_treause
 
+args = Args()
 # Configuration, including dimension settings, algorithm parameter settings.
 # The last few configurations in the file are for the Kaiwu platform to use and should not be changed.
 # 配置，包含维度设置，算法参数设置，文件的最后一些配置是开悟平台使用不要改动
@@ -20,8 +28,9 @@ class Config:
         6,
         6,
         8,
+        512,#添加视野特征 Backbone output
+        9938,#对其维度 但mlp不用10450 - 512 把这个放到最后一位 mlp多减一
     ]
-
     FEATURE_SPLIT_SHAPE = FEATURES
 
     # Size of observation

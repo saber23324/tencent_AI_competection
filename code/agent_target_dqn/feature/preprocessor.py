@@ -47,6 +47,10 @@ class Preprocessor:
         self.last_dist_end = 0.0
         self.dist_end = 0
         self.is_treasure_found = np.zeros(23, dtype=bool)
+        self.memory_map = np.zeros((51, 51))
+        self.obstacle_map = np.zeros((51, 51))
+        self.treasure_map = np.zeros((51, 51))
+        self.end_map = np.zeros((51, 51))
 
     def _get_pos_feature(self, found, cur_pos, target_pos):
         relative_pos = tuple(y - x for x, y in zip(cur_pos, target_pos))
@@ -83,12 +87,30 @@ class Preprocessor:
             self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  +=  0.1
         else:
             self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  =  1.0
-        
-        """# 终点位置与距离
-        self.last_dist_end = self.dist_end
-        # self.end_pos_obs = (ex_obs["game_info"]["end_pos"]["x"], ex_obs["game_info"]["end_pos"]["z"])#传进来不能直接用？？
-        relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos_obs))
-        self.dist_end = np.linalg.norm(relative_pos)"""
+# 提取memory地图
+        center_x, center_z = self.cur_pos[0], self.cur_pos[1]  # 当前点坐标
+        # 创建51x51的零矩阵
+        self.memory_map = np.zeros((51, 51), dtype=self.map_walk.dtype)
+
+        # 计算在完整地图中的有效范围
+        src_x_start = max(0, center_x - 25)
+        src_x_end = min(128, center_x + 26)
+        src_z_start = max(0, center_z - 25)
+        src_z_end = min(128, center_z + 26)
+
+        # 计算在目标矩阵中的放置位置
+        dst_x_start = max(0, 25 - center_x)
+        dst_x_end = dst_x_start + (src_x_end - src_x_start)
+        dst_z_start = max(0, 25 - center_z)
+        dst_z_end = dst_z_start + (src_z_end - src_z_start)
+
+        # 将有效区域复制到目标矩阵中
+        self.memory_map[dst_x_start:dst_x_end, dst_z_start:dst_z_end] = \
+            self.map_walk[src_x_start:src_x_end, src_z_start:src_z_end]
+        for i,dir in enumerate(obs["map_info"]):
+            self.obstacle_map[i] = dir["values"]
+
+
 
         # 宝箱奖励
         # self.treasure_score = ex_obs["game_info"]["treasure_score"]
@@ -100,22 +122,59 @@ class Preprocessor:
          # End position
         # 终点位置
         self.organ_dist_last =np.copy(self.organ_dist)
+
+        #更新 先清零
+        self.treasure_map = np.zeros((51, 51))
+        self.end_map = np.zeros((51, 51))
+        
         for organ in obs["frame_state"]["organs"]:
             if organ["sub_type"] == 4 and organ["status"] != -1:
-                self.end_pos = (organ["pos"]["x"], organ["pos"]["z"])
-                self.is_end_pos_found = True
-
-            if organ["sub_type"] == 1 and organ["status"] == 1:
                 config_id = organ["config_id"]
-                self.is_treasure_found[config_id] = True
-                self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
+                self.end_pos = (organ["pos"]["x"], organ["pos"]["z"])
+                pos_x = organ["pos"]["x"] - self.cur_pos[0] + 25
+                pos_z = organ["pos"]["z"] - self.cur_pos[1] + 25
+                self.end_map[pos_x][pos_z] = 1
                 # 计算该物体与当前位置的距离
+                self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
                 relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
                 self.organ_dist[config_id] = np.linalg.norm(relative_pos)
-            elif organ["sub_type"] == 1 and organ["status"] != 1:
+                self.is_end_pos_found = True
+                
+
+            if organ["sub_type"] == 1:
                 config_id = organ["config_id"]
-                self.is_treasure_found[config_id] = False
-                self.organ_dist[config_id] = -1#NotFound
+                pos_x = organ["pos"]["x"] - self.cur_pos[0] + 25
+                pos_z = organ["pos"]["z"] - self.cur_pos[1] + 25
+                if organ["status"] == 1:
+                    self.is_treasure_found[config_id] = True
+                    self.treasure_map[pos_x][pos_z] = 1
+                    self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
+                    # 计算该物体与当前位置的距离
+                    relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
+                    self.organ_dist[config_id] = np.linalg.norm(relative_pos)
+                else:
+                    self.treasure_map[pos_x][pos_z] = -1
+                    self.is_treasure_found[config_id] = False
+                    self.organ_dist[config_id] = -1#NotFound
+            if organ["sub_type"] == 2:#buff
+                config_id = organ["config_id"]
+                pos_x = organ["pos"]["x"] - self.cur_pos[0] + 25
+                pos_z = organ["pos"]["z"] - self.cur_pos[1] + 25
+                if organ["status"] == 1: 
+                    self.is_treasure_found[config_id] = True
+                    self.treasure_map[pos_x][pos_z] = 2
+                    self.organ_pos[config_id] = (organ["pos"]["x"], organ["pos"]["z"])
+                    # 计算该物体与当前位置的距离
+                    relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.organ_pos[config_id]))
+                    self.organ_dist[config_id] = np.linalg.norm(relative_pos)
+                else:
+                    self.treasure_map[pos_x][pos_z] = -2
+                    self.is_treasure_found[config_id] = False
+                    self.organ_dist[config_id] = -1#NotFound
+
+
+
+            self.is_end_pos_found = False
         target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
         target_dist = np.linalg.norm(target_relative_pos)
 
@@ -203,7 +262,7 @@ class Preprocessor:
         reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward)/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , treasure_reward , final_reward ,self.map_walk[center_x][center_z]]
         
-        
+
     def process(self, frame_state, last_action):
         self.pb2struct(frame_state, last_action)
 
@@ -213,7 +272,28 @@ class Preprocessor:
 
         # Feature
         # 特征
-        feature = np.concatenate([self.cur_pos_norm, self.feature_end_pos, self.feature_history_pos, legal_action])
+        # 添加视野特征
+        classical_feature = np.concatenate([
+        # 官方
+        self.cur_pos_norm,
+        self.feature_end_pos, 
+        self.feature_history_pos, 
+        legal_action,
+        ])
+        feature = np.concatenate([
+        np.stack([  # Image: (4, 51, 51)(10404)
+        self.obstacle_map,
+        self.memory_map,
+        self.treasure_map,
+        self.end_map,
+        ], axis=0).reshape(-1),
+        # 自定义特征
+        self.organ_dist, #23
+        self.is_treasure_found,#23
+        # 官方
+        classical_feature, # Feature
+        ]).astype(np.float32)
+        # assert feature.shape[0] == Args[], f"ERROR: {feature.shape[0]=} != {args.obs_dim+1}"
 
         return (
             feature,

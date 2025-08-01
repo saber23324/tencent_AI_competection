@@ -132,9 +132,9 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                 _obs_data, rewards = agent.observation_process(_obs, _extra_info)
                 reward = rewards[0]
                 # reward = sum(reward_list)
-                logger.info(
-                    f"game_info_terminated:{terminated_info[0]}{terminated_info[1]} "
-                )
+                # logger.info(
+                #     f"game_info_terminated:{terminated_info[0]}{terminated_info[1]} "
+                # )
                 # Determine task over, and update the number of victories
                 # 判断任务结束, 并更新胜利次数
                 game_info = _extra_info["game_info"]
