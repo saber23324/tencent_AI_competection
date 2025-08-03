@@ -26,3 +26,5 @@
 rate_of_projection  10  - 15
 
 log位置：aisrv_kaiwu_rl_helper_pid265_log_2025-07-28-15.log
+## 84
+增加cnn 之后把endmap进行修改 让agent时时刻刻看着目标相对位置，修改around_reward 看看是不是这个原因

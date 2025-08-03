@@ -172,11 +172,15 @@ class Preprocessor:
                     self.is_treasure_found[config_id] = False
                     self.organ_dist[config_id] = -1#NotFound
 
-
-
-            self.is_end_pos_found = False
         target_relative_pos = tuple(y - x for x, y in zip(self.cur_pos, self.end_pos))
         target_dist = np.linalg.norm(target_relative_pos)
+        # 加入视野map中 便于观察
+        pos_x = self.end_pos[0] - self.cur_pos[0] + 25
+        pos_z = self.end_pos[1] - self.cur_pos[1] + 25
+        # 限制坐标在有效范围内（0-50）
+        pos_x = np.clip(pos_x, 0, 50)
+        pos_z = np.clip(pos_z, 0, 50)
+        self.end_map[pos_x][pos_z] = 1
 
         # if end_pos is not found, try to change to a new random target
         # 如果终点位置未找到，尝试更换随机的新目标
@@ -212,11 +216,15 @@ class Preprocessor:
         sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
+        around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
+        '''测试
         if ratio<0.5:
             around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
                 obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
+        '''
+
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
         #     around_reward = -max(self.map_walk[center_x][center_z] - 0.1 * Args['repeat_step_thre'], 0)
@@ -234,7 +242,7 @@ class Preprocessor:
             # punish treasures haven't get
             # final_reward = final_reward - self.miss_treasure * Args['treasure_punish_coef']
         else :
-            final_reward = 0
+            final_reward = -50
         
         # 3.hit wall
         if self.hitwall_flag >= 3:
@@ -253,8 +261,8 @@ class Preprocessor:
             treasure_reward = 0
         # if not self.terminated_flag and self.treasure_score == 100:
         #     r += 50 * (self.treasure_reward_coef * (self._last_treasure_flag - obs_data[239:249])).sum()
-        ant_dist_treasure = np.max(self.organ_dist[1:14])
-        ter_reward = ant_dist_treasure*Args['dist_reward_coef']
+        # ant_dist_treasure = np.max(self.organ_dist[1:14])
+        # ter_reward = ant_dist_treasure*Args['dist_reward_coef']
         # step reward
         # 步数奖励
         step_reward = -0.01
