@@ -3,7 +3,7 @@ import numpy as np
 # Configuration
 Args = {
         ## 个人配置：
-    "max_env_step" : 1000 ,
+    "max_env_step" : 2000 ,
     "repeat_step_thre" : 0.4,
     "repeat_punish11_11": np.array([
         [0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000],
@@ -26,7 +26,7 @@ Args = {
         [0, 0, 0, 0, 0],
     ], np.float32),
     "treasure_miss_reset_episode": 100,
-    "dist_reward_coef" : 1,
+    "dist_reward_coef" : 3,
     "rate_of_projection" : 10.0,
     "treasure_punish_coef" : 10,
     "around_punish":18

@@ -87,7 +87,7 @@ class Preprocessor:
             self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  +=  0.1
         else:
             self.map_walk[hero["pos"]["x"]][hero["pos"]["z"]]  =  1.0
-# 提取memory地图
+        # 提取memory地图
         center_x, center_z = self.cur_pos[0], self.cur_pos[1]  # 当前点坐标
         # 创建51x51的零矩阵
         self.memory_map = np.zeros((51, 51), dtype=self.map_walk.dtype)
@@ -128,7 +128,7 @@ class Preprocessor:
         self.end_map = np.zeros((51, 51))
         
         for organ in obs["frame_state"]["organs"]:
-            if organ["sub_type"] == 4 and organ["status"] != -1:
+            if organ["sub_type"] == 4:
                 config_id = organ["config_id"]
                 self.end_pos = (organ["pos"]["x"], organ["pos"]["z"])
                 pos_x = organ["pos"]["x"] - self.cur_pos[0] + 25
@@ -216,14 +216,14 @@ class Preprocessor:
         sub_matrix = self.map_walk[center_x-2:center_x+3, center_z-2:center_z+3]
         # 拉直为一维数组
         obs_data_5_5 = sub_matrix.flatten()
-        around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
-        '''测试
+        # around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
+
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*1.8
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
-        '''
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*1.8
+        # around_reward = 0
 
         # obs_data_10_10 = sub_matrix.flatten()
         # if ratio<0.5:
@@ -242,8 +242,8 @@ class Preprocessor:
             # punish treasures haven't get
             # final_reward = final_reward - self.miss_treasure * Args['treasure_punish_coef']
         else :
-            final_reward = -50
-        
+            final_reward = 0
+        # final_reward = 0
         # 3.hit wall
         if self.hitwall_flag >= 3:
             hitwall_reward = -3
@@ -256,7 +256,7 @@ class Preprocessor:
         treasure_found_mask = self.is_treasure_found[valid_indices]
         if np.any(treasure_found_mask):
             dist_improvement = (self.organ_dist_last[valid_indices] - self.organ_dist[valid_indices]) * treasure_found_mask
-            treasure_reward = np.max(dist_improvement)*Args['dist_reward_coef']*1.2 #额外增益
+            treasure_reward = np.max(dist_improvement)*Args['dist_reward_coef'] #额外增益
         else:
             treasure_reward = 0
         # if not self.terminated_flag and self.treasure_score == 100:
@@ -267,7 +267,7 @@ class Preprocessor:
         # 步数奖励
         step_reward = -0.01
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward)/Args['rate_of_projection']
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward + treasure_reward)/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , treasure_reward , final_reward ,self.map_walk[center_x][center_z]]
         
 
