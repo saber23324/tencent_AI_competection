@@ -127,8 +127,7 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
 
                 # Feature processing
                 # 特征处理
-                terminated_info = [terminated,end_pos]
-                agent.terminate_update(terminated_info)
+                
                 _obs_data, rewards = agent.observation_process(_obs, _extra_info)
                 reward = rewards[0]
                 # reward = sum(reward_list)
@@ -138,15 +137,17 @@ def run_episodes(n_episode, env, agent, usr_conf, logger, monitor):
                 # Determine task over, and update the number of victories
                 # 判断任务结束, 并更新胜利次数
                 game_info = _extra_info["game_info"]
+                terminated_info = [terminated,end_pos,game_info['treasure_collected_count']]
+                agent.terminate_update(terminated_info)
                 if truncated:
                     win_rate = agent.update_win_rate(False)
-                    reward = -3
+                    reward = -4
                     logger.info(
                         f"Game truncated! step_no:{step_no} score:{game_info['total_score']} win_rate:{win_rate}"
                     )
                 elif terminated:
                     win_rate = agent.update_win_rate(True)
-                    reward = 10
+                    reward = 11
                     logger.info(
                         f"Game terminated! step_no:{step_no} score:{game_info['total_score']} win_rate:{win_rate}"
                     )

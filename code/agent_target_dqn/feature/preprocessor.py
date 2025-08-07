@@ -43,7 +43,7 @@ class Preprocessor:
         self.organ_pos = [(0, 0) for _ in range(23)] # 物件id 0代表buff，1~13代表宝箱 21代表起点, 22代表终点
         self.organ_dist = np.zeros(23, dtype=float)
         self.organ_dist_last =np.zeros(23, dtype=float)
-        self.miss_treasure = 0.0
+        self.get_treasure = 0
         self.last_dist_end = 0.0
         self.dist_end = 0
         self.is_treasure_found = np.zeros(23, dtype=bool)
@@ -51,6 +51,7 @@ class Preprocessor:
         self.obstacle_map = np.zeros((51, 51))
         self.treasure_map = np.zeros((51, 51))
         self.end_map = np.zeros((51, 51))
+        self.pos_history = [(0, 0) for _ in range(10)] #10个历史位置
 
     def _get_pos_feature(self, found, cur_pos, target_pos):
         relative_pos = tuple(y - x for x, y in zip(cur_pos, target_pos))
@@ -76,6 +77,9 @@ class Preprocessor:
         self.cur_pos = (hero["pos"]["x"], hero["pos"]["z"])
         if self.end_pos is None:
             self.end_pos = self.target_pos_list.pop(random.randrange(len(self.target_pos_list)))
+        #近期历史位置
+        self.pos_history.pop(0)
+        self.pos_history.append(self.cur_pos)
 
         # History position
         # 历史位置
@@ -207,6 +211,7 @@ class Preprocessor:
     def update_terminated(self,terminated):
         self.terminated_flag = terminated[0]
         self.end_pos_obs = terminated[1]
+        self.get_treasure = terminated[2]
     def reward_pross(self):
         # REWARD
         # 1. punish repeated step around
@@ -219,10 +224,15 @@ class Preprocessor:
         # around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
 
         if ratio<0.5:
-            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)*1.8
+            around_reward = -max(self.map_walk[center_x][center_z] -  Args['repeat_step_thre'], 0)
         else:
             around_reward = -(Args['repeat_punish5_5'] * np.maximum(
-                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()*1.8
+                obs_data_5_5-Args['repeat_step_thre'], 0).reshape(5,5)).sum()
+
+        if self.pos_history.count(self.pos_history[-1]) >=3: 
+            pos_around_reward = -1
+        else:
+            pos_around_reward = 0
         # around_reward = 0
 
         # obs_data_10_10 = sub_matrix.flatten()
@@ -240,7 +250,7 @@ class Preprocessor:
         if self.terminated_flag:
             final_reward = 150
             # punish treasures haven't get
-            # final_reward = final_reward - self.miss_treasure * Args['treasure_punish_coef']
+            # final_reward = final_reward - (Args['treasure_cnt'] - self.get_treasure )* Args['treasure_punish_coef'] 
         else :
             final_reward = 0
         # final_reward = 0
@@ -267,7 +277,7 @@ class Preprocessor:
         # 步数奖励
         step_reward = -0.01
         # reward = (around_reward+ dist_reward + hitwall_reward + ter_reward)/Args['rate_of_projection']
-        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward + treasure_reward)/Args['rate_of_projection']
+        reward = ( dist_reward + hitwall_reward + final_reward + around_reward + step_reward + treasure_reward +pos_around_reward)/Args['rate_of_projection']
         return [reward,around_reward ,dist_reward , treasure_reward , final_reward ,self.map_walk[center_x][center_z]]
         
 
